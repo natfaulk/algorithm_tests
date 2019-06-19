@@ -132,6 +132,7 @@ let mousedownHandler = (e) => {
 }
 
 let touchdownHandler = (e) => {
+  showHelp = false
   e.preventDefault()
   for (let i = 0; i < blobs.length; i++) {
     if (Math.hypot(e.touches[0].clientY - blobs[i].y, e.touches[0].clientX - blobs[i].x) <= BLOB_WIDTH / 2)
