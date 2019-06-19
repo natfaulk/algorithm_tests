@@ -1,4 +1,4 @@
-# Algoritm tests for other projects
+# Algorithm tests for other projects
 
 Interactive demos of algorithms I have quickly written in JS before implementing in other projects.
 Mostly so I could verify the algorithms worked as I expected. Not necessarily implemented in the most efficient or optimal way, but in a way that was suitable for the situation in which I needed them.  
