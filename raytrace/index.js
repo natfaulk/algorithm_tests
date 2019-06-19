@@ -1,7 +1,10 @@
+const BLOB_WIDTH = 50
+
 let d
 let blobI = 0
 let blobs = []
 let rects = []
+let showHelp = true;
 
 class Blob {
   constructor(_x, _y, _d, _c) {
@@ -14,7 +17,7 @@ class Blob {
 
   draw() {
     this.d.fill(this.col)
-    this.d.ellipse(this.x, this.y, 25)
+    this.d.ellipse(this.x, this.y, BLOB_WIDTH)
   }
 }
 
@@ -49,16 +52,20 @@ class Rect1 {
 let setup = () => {
   d = new Mindrawingjs()
   d.setup('myCanvas')
-  d.c.addEventListener('mousedown', mousedownHandler, false);
-  d.c.addEventListener('mouseup', mouseupHandler, false);
-  d.c.addEventListener('mousemove', mousemoveHandler, false);
+  d.c.addEventListener('click', mouseclickHandler, false)
+  d.c.addEventListener('mousedown', mousedownHandler, false)
+  d.c.addEventListener('mouseup', mouseupHandler, false)
+  d.c.addEventListener('mousemove', mousemoveHandler, false)
+  d.c.addEventListener('touchstart', touchdownHandler, false)
+  d.c.addEventListener('touchend', mouseupHandler, false)
+  d.c.addEventListener('touchmove', touchmoveHandler, false)
 
   windowResize()
 
   blobs.push(new Blob(20, 20, d, 'red'))
-  blobs.push(new Blob(100, 100, d, 'blue'))
+  blobs.push(new Blob(200, 200, d, 'blue'))
 
-  for (let i = 0; i < 50; i++)
+  for (let i = 0; i < Math.max(d.c.height * d.c.width / 40000, 10); i++)
   {
     rects.push(new Rect1(Math.random()*d.c.width, Math.random()*d.c.height, 20 + Math.random()*180, 20 + Math.random()*180, d))
   }
@@ -82,6 +89,28 @@ let draw = () => {
 
   d.strokeWeight(1)
   d.line(blobs[0].x, blobs[0].y, blobs[1].x, blobs[1].y)
+
+  if (showHelp) {
+    d.fill('#ffffff80')
+    d.rect(0, 0, d.c.width, d.c.height)
+
+    let txtSize = 40
+    d.textSize(txtSize)
+    d.fill('#222')
+    let txt = "Click and drag blobs to move them"
+    let txt2 = "Click to hide this message"
+
+    while (d.ctx.measureText(txt).width > d.c.width)
+    {
+      txtSize *= 2/3
+      d.textSize(txtSize)
+    }
+
+    d.text(txt, (d.c.width - d.ctx.measureText(txt).width) / 2, d.c.height / 3)
+    d.textSize(txtSize / 2)
+    d.text(txt2, (d.c.width - d.ctx.measureText(txt2).width) / 2, d.c.height / 3 + txtSize)
+
+  }
 }
 
 window.onresize = function(event) {
@@ -89,9 +118,22 @@ window.onresize = function(event) {
   draw()
 }
 
+let mouseclickHandler = (e) => {
+  showHelp = false
+}
+
 let mousedownHandler = (e) => {
   for (let i = 0; i < blobs.length; i++) {
-    if (Math.hypot(e.clientY - blobs[i].y, e.clientX - blobs[i].x) <= 25 / 2)
+    if (Math.hypot(e.clientY - blobs[i].y, e.clientX - blobs[i].x) <= BLOB_WIDTH / 2)
+    {
+      blobs[i].drag = true
+    }
+  }
+}
+
+let touchdownHandler = (e) => {
+  for (let i = 0; i < blobs.length; i++) {
+    if (Math.hypot(e.touches[0].clientY - blobs[i].y, e.touches[0].clientX - blobs[i].x) <= BLOB_WIDTH / 2)
     {
       blobs[i].drag = true
     }
@@ -109,6 +151,16 @@ let mousemoveHandler = (e) => {
     if (blobs[i].drag === true) {
       blobs[i].x = e.clientX
       blobs[i].y = e.clientY
+      break
+    }
+  }
+}
+
+let touchmoveHandler = (e) => {
+  for (let i = 0; i < blobs.length; i++) {
+    if (blobs[i].drag === true) {
+      blobs[i].x = e.touches[0].clientX
+      blobs[i].y = e.touches[0].clientY
       break
     }
   }
