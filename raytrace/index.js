@@ -132,6 +132,7 @@ let mousedownHandler = (e) => {
 }
 
 let touchdownHandler = (e) => {
+  e.preventDefault()
   for (let i = 0; i < blobs.length; i++) {
     if (Math.hypot(e.touches[0].clientY - blobs[i].y, e.touches[0].clientX - blobs[i].x) <= BLOB_WIDTH / 2)
     {
@@ -157,6 +158,7 @@ let mousemoveHandler = (e) => {
 }
 
 let touchmoveHandler = (e) => {
+  e.preventDefault()
   for (let i = 0; i < blobs.length; i++) {
     if (blobs[i].drag === true) {
       blobs[i].x = e.touches[0].clientX
