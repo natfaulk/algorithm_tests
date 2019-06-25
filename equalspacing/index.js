@@ -1,5 +1,5 @@
-const DOT_SIZE = 5
-const N_DOTS = 500
+const DOTSIZE = 5
+const N_DOTS = 1000
 
 const N_NEIGHBOURS = 3
 
@@ -19,7 +19,7 @@ class Dot {
   draw() {
     this.d.stroke('black')
     this.d.fill(this.col)
-    this.d.ellipse(this.x, this.y, DOT_SIZE)
+    this.d.ellipse(this.x, this.y, DOTSIZE)
   }
 
   applyForce() {
@@ -85,40 +85,38 @@ let tick = () => {
   draw()
 }
 
-let getNearestNeighbours = _d => {
-  let dotDists = []
-  
-  for (let i = 0; i < dots.length; i++)
-  {
-    let di = dots[i]
-    if (_d != di) {
-      dotDists.push({
-        dist: Math.hypot(_d.y - di.y, _d.x - di.x),
-        dot: di
-      })
-    }
-  }
-
-  // sort
-  dotDists.sort((a, b) => a.dist - b.dist)
-  return dotDists.slice(0, N_NEIGHBOURS)
-}
-
 let mouseclickHandler = (e) => {
   let av = 0
   let count = 0
 
   let nn_cache = []
 
+  let q = new Quadtree({x: d.c.width / 2, y:d.c.height / 2}, d.c.width, d.c.height)
+  for (let i = 0; i < dots.length; i++) {
+    q.add(dots[i])
+  }
+
   for (let i = 0; i < dots.length; i++)
   {
-    let ns = getNearestNeighbours(dots[i])
+    let ns = q.knn(dots[i], N_NEIGHBOURS + 1)
+    let ns2 = []
     ns.forEach(_n => {
-      av += _n.dist
-      ++count
+      // dont compare dot with itself
+      if (_n.x != dots[i].x && _n.y != dots.y) {
+        let dist = Math.hypot(dots[i].y - _n.y, dots[i].x - _n.x) 
+        av += dist
+        ++count
+        ns2.push({
+          dist:dist,
+          dot: {
+            x:_n.x,
+            y:_n.y
+          }
+        })
+      }
     })
 
-    nn_cache.push({d:dots[i], ns: ns})
+    nn_cache.push({d:dots[i], ns: ns2})
   }
   
   av /= count
