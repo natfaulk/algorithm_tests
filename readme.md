@@ -7,4 +7,4 @@ All written using ES6 so a fairly modern browser is required.
 
 [Raytrace demo](http://static1.natfaulk.com/statics/algorithm_tests/raytrace/raytrace.html)  
 [Equalise spacing demo](http://static1.natfaulk.com/statics/algorithm_tests/equalspacing/equalspacing.html)  
-[Quadtree demo](http://static1.natfaulk.com/statics/algorithm_tests/quadtrees/quadtrees.html)  
+[Quadtree KNN demo](http://static1.natfaulk.com/statics/algorithm_tests/quadtrees/quadtrees.html)  
