@@ -9,3 +9,4 @@ All written using ES6 so a fairly modern browser is required.
 [Equalise spacing demo](http://static1.natfaulk.com/statics/algorithm_tests/equalspacing/equalspacing.html)  
 [Quadtree KNN demo](http://static1.natfaulk.com/statics/algorithm_tests/quadtrees/quadtrees.html)  
 [Point in triangle collision demo](http://static1.natfaulk.com/statics/algorithm_tests/pointintriangle/pint.html)  
+[Path smoothing / interpolation](http://static1.natfaulk.com/statics/algorithm_tests/pathinterp/pathinterp.html)  
