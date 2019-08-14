@@ -31,29 +31,17 @@ class Character {
   }
 }
 
-const STEP_SIZE = 15
+const STEP_SIZE = 12
 const DELAY = 5
 
 class Path {
   constructor() {
     this.pts = []
-    this.ptslead = []
     this.pts2 = []
   }
 
   draw(_d) {
     this.drawArray(_d, this.pts, 'red')
-    _d.fill('black')
-    _d.stroke('black')
-    this.ptslead.forEach(_p => {
-      _p.draw(_d)
-    })
-
-    for (let i = DELAY; i < this.ptslead.length; i++)
-    {
-      _d.line(this.ptslead[i].x, this.ptslead[i].y, this.pts2[i-DELAY].x, this.pts2[i-DELAY].y)
-    }
-
     this.drawArray(_d, this.pts2, 'blue')
   }
 
@@ -70,45 +58,70 @@ class Path {
     if (i < _list.length) _list[i].draw(_d)
   }
 
-  interpolate()
-  {
-    this.pts2 = []
-    this.ptslead = []
-    let wp = 1
-
-    let lead = new Character(this.pts[0].x, this.pts[0].y)
-    let pos = new Character(this.pts[0].x, this.pts[0].y)
-
-    for (let i = 0; i < DELAY; i ++)
+  interpolate2(_p) {
+    this.pts.push(new Point(_p.x, _p.y))
+    if (this.pts2.length == 0)
     {
-      if (this.getNextPos(lead, this.pts[wp], STEP_SIZE)) wp++
-      if (wp >= this.pts.length) break;
-
-      this.ptslead.push(new Point(lead.x, lead.y))
+      this.pts2.push(new Point(_p.x, _p.y))
+      return
     }
 
-    while (wp < this.pts.length)
+    if (this.pts2.length == 1)
     {
-      let stepsize = (DELAY + 1) * STEP_SIZE - pos.dist(lead)
-      if (this.getNextPos(lead, this.pts[wp], stepsize)) wp++
+      let follower = new Character(this.pts2[0].x, this.pts2[0].y)
       
-      let angle = pos.angleTo(lead)
-      pos.x += Math.cos(angle) * STEP_SIZE
-      pos.y += Math.sin(angle) * STEP_SIZE
-      this.pts2.push(new Point(pos.x, pos.y))
-      this.ptslead.push(new Point(lead.x, lead.y))
+      while (follower.dist(_p) > STEP_SIZE)
+      {
+        let ang = follower.angleTo(_p);
+        let dist = follower.dist(_p);
+        if (dist > STEP_SIZE) dist = STEP_SIZE;
+        follower.x += Math.cos(ang) * dist
+        follower.y += Math.sin(ang) * dist
+        this.pts2.push(new Point(follower.x, follower.y));
+      }
+      return
     }
 
-    for (let i = 0; i < DELAY; i++)
+    let oldLast = this.pts2[this.pts2.length - 1];
+    if (this.pts2.length <= DELAY) this.pts2 = []
+    else {
+      for (let i = 0; i < DELAY; i++) this.pts2.pop() 
+    }
+
+    if (this.pts2.length == 0) {
+      this.pts2.push(this.pts[0])
+    }
+
+    let lead = new Character(oldLast.x, oldLast.y)
+    let follow = new Character(this.pts2[this.pts2.length - 1].x, this.pts2[this.pts2.length - 1].y)
+
+    while (lead.dist(_p) > STEP_SIZE)
     {
-      let angle = pos.angleTo(lead)
-      let dist = pos.dist(lead)
+      let stepsize = (DELAY + 1) * STEP_SIZE - follow.dist(lead)
+      // if (this.getNextPos(lead, this.pts[wp], stepsize)) wp++
+      let angle = lead.angleTo(_p)
+      lead.x += Math.cos(angle) * stepsize
+      lead.y += Math.sin(angle) * stepsize
+      
+      angle = follow.angleTo(lead)
+      follow.x += Math.cos(angle) * STEP_SIZE
+      follow.y += Math.sin(angle) * STEP_SIZE
+      this.pts2.push(new Point(follow.x, follow.y))
+      // this.ptslead.push(new Point(lead.x, lead.y))
+    }
+    lead.x = _p.x
+    lead.y = _p.y
+
+    for (let i = 0; i < DELAY + 1; i++)
+    {
+      let angle = follow.angleTo(lead)
+      let dist = follow.dist(lead)
       if (dist > STEP_SIZE) dist = STEP_SIZE
       // to break out loop at end of this block
       else i = DELAY
-      pos.x += Math.cos(angle) * dist
-      pos.y += Math.sin(angle) * dist
-      this.pts2.push(new Point(pos.x, pos.y))
+      follow.x += Math.cos(angle) * dist
+      follow.y += Math.sin(angle) * dist
+      this.pts2.push(new Point(follow.x, follow.y))
     }
   }
 
@@ -125,6 +138,12 @@ class Path {
     }
 
   }
+
+  clear()
+  {
+    this.pts = []
+    this.pts2 = []
+  }
 }
 
 let path = new Path()
@@ -135,18 +154,18 @@ let setup = () => {
   d.c.addEventListener('click', mouseclickHandler, false)  
   windowResize()
 
-  // path.pts.push(new Point(650,106))
-  // path.pts.push(new Point(220,296))
-  // path.pts.push(new Point(113,498))
-  // path.pts.push(new Point(409,755))
-  // path.pts.push(new Point(717,809))
-  // path.pts.push(new Point(837,669))
-  // path.pts.push(new Point(830,447))
-  // path.pts.push(new Point(727,341))
-  // path.pts.push(new Point(487,627))
-  // path.pts.push(new Point(550,290))
-  // path.pts.push(new Point(689,631))
-  // path.pts.push(new Point(263,421))
+  path.interpolate2(new Point(650,106))
+  path.interpolate2(new Point(220,296))
+  path.interpolate2(new Point(113,498))
+  path.interpolate2(new Point(409,755))
+  path.interpolate2(new Point(717,809))
+  path.interpolate2(new Point(837,669))
+  path.interpolate2(new Point(830,447))
+  path.interpolate2(new Point(727,341))
+  path.interpolate2(new Point(487,627))
+  path.interpolate2(new Point(550,290))
+  path.interpolate2(new Point(689,631))
+  path.interpolate2(new Point(263,421))
 }
 
 let windowResize = () => {
@@ -184,7 +203,7 @@ let tick = () => {
 
 let mouseclickHandler = (e) => {
   let p = new Point(e.clientX, e.clientY)
-  path.pts.push(p)
+  path.interpolate2(p)
 }
 
 setup()
