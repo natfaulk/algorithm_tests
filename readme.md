@@ -10,3 +10,4 @@ All written using ES6 so a fairly modern browser is required.
 [Quadtree KNN demo](http://static1.natfaulk.com/statics/algorithm_tests/quadtrees/quadtrees.html)  
 [Point in triangle collision demo](http://static1.natfaulk.com/statics/algorithm_tests/pointintriangle/pint.html)  
 [Path smoothing / interpolation](http://static1.natfaulk.com/statics/algorithm_tests/pathinterp/pathinterp.html)  
+[Blob detection / clustering](http://static1.natfaulk.com/statics/algorithm_tests/blobdetection/blobdetect.html)  
