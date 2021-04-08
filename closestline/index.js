@@ -88,7 +88,7 @@ const getClosestPoint = (a, b, p) => {
   if (t <= 0) return a
   if (t >= 1) return b
 
-  out = {
+  let out = {
     x: a.x + atob.x*t,
     y: a.y + atob.y*t
   }
