@@ -12,3 +12,4 @@ All written using ES6 so a fairly modern browser is required.
 [Point in polygon collision demo](http://static1.natfaulk.com/statics/algorithm_tests/pointinpolygon/pinp.html)  
 [Path smoothing / interpolation](http://static1.natfaulk.com/statics/algorithm_tests/pathinterp/pathinterp.html)  
 [Blob detection / clustering](http://static1.natfaulk.com/statics/algorithm_tests/blobdetection/blobdetect.html)  
+[Closest point on line segment](http://static1.natfaulk.com/statics/algorithm_tests/closestline/closestline.html)  
